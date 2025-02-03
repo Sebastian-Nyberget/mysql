@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model gruppetimer {
+  id                   Int                    @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  PersonligTrener_id   Int
+  time_navn            String?                @db.Text
+  time_dato            DateTime?              @db.Date
+  max_antall_medlemmer Int?
+  antall_p_meldte      Int?                   @map("antall_påmeldte")
+  beskrivelse          String?                @db.Text
+  personlig_trener     personlig_trener       @relation(fields: [PersonligTrener_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Gruppetimer_PersonligTrener1")
+  p_meldte_gruppetimer p_meldte_gruppetimer[]
+
+  @@index([PersonligTrener_id], map: "fk_Gruppetimer_PersonligTrener1_idx")
+}
+
+model medlemmer {
+  id                   Int                       @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  fornavn              String                    @db.VarChar(255)
+  etternavn            String?                   @db.VarChar(255)
+  email                String                    @db.VarChar(255)
+  telefonnummer        String?                   @db.VarChar(8)
+  f_dselsdato          DateTime?                 @map("fødselsdato") @db.Date
+  medlemskap_type      medlemmer_medlemskap_type
+  registrerings_dato   DateTime?                 @db.Date
+  aktiv                Int?                      @db.TinyInt
+  pt_vurderinger       pt_vurderinger[]
+  p_meldte_gruppetimer p_meldte_gruppetimer[]
+  treningstimer        treningstimer[]
+}
+
+model personlig_trener {
+  id               Int              @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  fornavn          String?          @db.VarChar(255)
+  etternavn        String?          @db.VarChar(255)
+  email            String?          @db.VarChar(255)
+  telefonnummer    String?          @db.VarChar(8)
+  spesialiseringer String?          @db.VarChar(255)
+  erfaring__r      Int?             @map("erfaring_år")
+  aktiv            Int?             @db.TinyInt
+  gruppetimer      gruppetimer[]
+  pt_vurderinger   pt_vurderinger[]
+  treningstimer    treningstimer[]
+}
+
+model pt_vurderinger {
+  id                 Int              @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  Medlemmer_id       Int
+  PersonligTrener_id Int
+  vurdering          Int?
+  anmeldelse         String?          @db.Text
+  anmeldelse_dato    DateTime?        @db.DateTime(0)
+  Treningstimer_id   Int
+  medlemmer          medlemmer        @relation(fields: [Medlemmer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_PT_Vurderinger_Medlemmer1")
+  personlig_trener   personlig_trener @relation(fields: [PersonligTrener_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_PT_Vurderinger_PersonligTrener1")
+  treningstimer      treningstimer    @relation(fields: [Treningstimer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_PT_Vurderinger_Treningstimer1")
+
+  @@index([Medlemmer_id], map: "fk_PT_Vurderinger_Medlemmer1_idx")
+  @@index([PersonligTrener_id], map: "fk_PT_Vurderinger_PersonligTrener1_idx")
+  @@index([Treningstimer_id], map: "fk_PT_Vurderinger_Treningstimer1_idx")
+}
+
+model p_meldte_gruppetimer {
+  id              Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  Medlemmer_id    Int
+  Gruppetimer_id  Int
+  p_meldings_dato DateTime?   @map("påmeldings_dato") @db.Date
+  gruppetimer     gruppetimer @relation(fields: [Gruppetimer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Påmeldte_Gruppetimer_Gruppetimer1")
+  medlemmer       medlemmer   @relation(fields: [Medlemmer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Påmeldte_Gruppetimer_Medlemmer1")
+
+  @@index([Gruppetimer_id], map: "fk_Påmeldte_Gruppetimer_Gruppetimer1_idx")
+  @@index([Medlemmer_id], map: "fk_Påmeldte_Gruppetimer_Medlemmer1_idx")
+  @@map("påmeldte_gruppetimer")
+}
+
+model treningstimer {
+  id                 Int                   @id @default(autoincrement())
+  Medlemmer_id       Int
+  PersonligTrener_id Int
+  treningstime_dato  DateTime?             @db.Date
+  varighet_minutter  Int?
+  notater            String?               @db.Text
+  status             treningstimer_status?
+  pt_vurderinger     pt_vurderinger[]
+  medlemmer          medlemmer             @relation(fields: [Medlemmer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Treningstimer_Medlemmer")
+  personlig_trener   personlig_trener      @relation(fields: [PersonligTrener_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Treningstimer_PersonligTrener1")
+
+  @@index([Medlemmer_id], map: "fk_Treningstimer_Medlemmer_idx")
+  @@index([PersonligTrener_id], map: "fk_Treningstimer_PersonligTrener1_idx")
+}
+
+enum medlemmer_medlemskap_type {
+  Basic
+  Mid
+  Pro
+  Athlete
+}
+
+enum treningstimer_status {
+  Planlagt
+  Fullf_rt @map("Fullført")
+  Avbrutt
+}
