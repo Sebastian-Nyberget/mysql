@@ -18,14 +18,14 @@ export default function MedlemmerPage() {
   }, []);
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white text-black min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Medlemmer</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <ul className="space-y-2">
           {medlemmer.map((medlem) => (
-            <li key={medlem.id} className="p-2 border rounded-md">
+            <li key={medlem.id} className="p-2 border border-gray-400 rounded-md">
               {medlem.fornavn} - {medlem.email}
             </li>
           ))}
