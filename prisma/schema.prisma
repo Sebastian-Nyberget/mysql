@@ -25,7 +25,8 @@ model medlemmer {
   id                   Int                       @id @unique(map: "id_UNIQUE") @default(autoincrement())
   fornavn              String                    @db.VarChar(255)
   etternavn            String?                   @db.VarChar(255)
-  email                String                    @db.VarChar(255)
+  email                String                    @unique @db.VarChar(255)
+  password             String                    @db.VarChar(255)
   telefonnummer        String?                   @db.VarChar(8)
   f_dselsdato          DateTime?                 @map("fødselsdato") @db.Date
   medlemskap_type      medlemmer_medlemskap_type
