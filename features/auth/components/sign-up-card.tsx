@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { signupSchema } from "../schemas";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function SignUpCard() {
   const [message, setMessage] = useState("");
@@ -20,7 +21,7 @@ export default function SignUpCard() {
   });  
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
-    console.log("Submitting data:", data); // Debugging log
+    console.log("Submitting data:", data);
   
     try {
       const res = await axios.post("/api/auth/signup", data);
@@ -34,18 +35,28 @@ export default function SignUpCard() {
   
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input {...register("fornavn")} placeholder="Name" />
-      {errors.fornavn && <p className="text-red-500">{errors.fornavn.message}</p>}
-
-      <Input {...register("email")} type="email" placeholder="Email" />
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-
-      <Input {...register("password")} type="password" placeholder="Password" />
-      {errors.password && <p className="text-red-500">{errors.password.message}</p>}
-
-      <Button type="submit">Sign Up</Button>
-      {message && <p>{message}</p>}
-    </form>
+    <Card>
+      <CardHeader className="font-bold text-2xl">
+        Sign Up
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <Input {...register("fornavn")} placeholder="Name" />
+            {errors.fornavn && <p className="text-red-500">{errors.fornavn.message}</p>}
+          </div>
+          <div>
+            <Input {...register("email")} type="email" placeholder="Email" />
+            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+          </div>
+          <div>
+            <Input {...register("password")} type="password" placeholder="Passord" />
+            {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+          </div>
+          <Button type="submit">Sign Up</Button>
+          {message && <p>{message}</p>}
+        </form>
+      </CardContent>
+    </Card>
   );
 }

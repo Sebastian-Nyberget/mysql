@@ -7,6 +7,7 @@ import axios, { AxiosError } from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -34,15 +35,22 @@ export default function SignInCard() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input {...register("email")} type="email" placeholder="Email" />
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-
-      <Input {...register("password")} type="password" placeholder="Password" />
-      {errors.password && <p className="text-red-500">{errors.password.message}</p>}
-
-      <Button type="submit">Login</Button>
-      {message && <p>{message}</p>}
-    </form>
+    <Card>
+      <CardHeader>
+        Login
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input {...register("email")} type="email" placeholder="Email" />
+          {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+  
+          <Input {...register("password")} type="password" placeholder="Password" />
+          {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+  
+          <Button type="submit">Login</Button>
+          {message && <p>{message}</p>}
+        </form>
+      </CardContent>
+    </Card>
   );
 }
