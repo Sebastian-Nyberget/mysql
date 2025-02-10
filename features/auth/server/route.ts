@@ -14,7 +14,7 @@ app.post(
     try {
       console.log("Incoming request body:", await c.req.text());
 
-      const { fornavn, email, password } = await c.req.json();
+      const { fornavn, etternavn, email, password } = await c.req.json();
 
       if (!fornavn || !email || !password) {
         return c.json({ error: "Missing required fields" }, 400);
@@ -26,12 +26,16 @@ app.post(
       }
 
       const hashedPassword = await hash(password, 10);
+      const currentDate = new Date()
       const user = await prisma.medlemmer.create({
         data: {
           fornavn,
+          etternavn,
           email,
           password: hashedPassword,
           medlemskap_type: "Basic",
+          aktiv: 1,
+          registrerings_dato: currentDate
         },
       });
 

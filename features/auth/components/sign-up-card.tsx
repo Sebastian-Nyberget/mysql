@@ -42,7 +42,11 @@ export default function SignUpCard() {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Input {...register("fornavn")} placeholder="Name" />
+            <Input {...register("fornavn")} placeholder="Fornavn" />
+            {errors.fornavn && <p className="text-red-500">{errors.fornavn.message}</p>}
+          </div>
+          <div>
+            <Input {...register("etternavn")} placeholder="Etternavn" />
             {errors.fornavn && <p className="text-red-500">{errors.fornavn.message}</p>}
           </div>
           <div>

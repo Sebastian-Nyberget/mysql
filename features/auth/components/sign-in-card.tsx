@@ -44,7 +44,7 @@ export default function SignInCard() {
           <Input {...register("email")} type="email" placeholder="Email" />
           {errors.email && <p className="text-red-500">{errors.email.message}</p>}
   
-          <Input {...register("password")} type="password" placeholder="Password" />
+          <Input {...register("password")} type="password" placeholder="Passord" />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
   
           <Button type="submit">Login</Button>
